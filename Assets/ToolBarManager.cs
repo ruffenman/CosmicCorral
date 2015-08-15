@@ -13,6 +13,7 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	// Use this for initialization
 	void Start () {
 		graphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
+
 		DontDestroyOnLoad (graphicRaycaster.gameObject);
 	}
 	
@@ -21,11 +22,19 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
 	}
 
+	bool isMouseAble(GameObject gameobj) {
+		if (gameobj.layer == LayerMask.NameToLayer("MouseAble"))
+			return true;
+		else
+			return false;
+	}
+
 	public void OnPointerEnter(PointerEventData eventData){
 		Debug.Log ("Mouse is over something");
 	}
 
 	public void OnPointerDown(PointerEventData eventData){
+
 		eventData.selectedObject = eventData.pointerCurrentRaycast.gameObject;
 		Debug.Log("Clicked on something");
 	}
