@@ -2,19 +2,10 @@
 using System.Collections;
 
 public class MapManager : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	#region instance variables
 	public int columns = 20;
 	public int rows = 20;
-
+	
 	//Goal objects
 	[SerializeField]
 	private GameObject gatorPen;
@@ -30,4 +21,20 @@ public class MapManager : MonoBehaviour {
 	private GameObject[] openFlame;
 	[SerializeField]
 	private GameObject[] barrels;
+	
+	/*public struct TileProperty {
+		int movement;
+
+	};*/
+	#endregion
+
+	// Use this for initialization
+	void Start () {
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
 }
