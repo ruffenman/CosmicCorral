@@ -6,10 +6,15 @@ public class AnimalController : MonoBehaviour {
 	#region instance variables
 	public enum Direction {North, South, East, West};
 	const float stepSize = 0.1f;
+	const float attractionRadius = 200;
 
 	// public variables
-	public Direction direction;
-	public Vector2 velocity;
+	[SerializeField]
+	private bool attracted;
+	[SerializeField]
+	private Direction direction;
+	[SerializeField]
+	private Vector2 velocity;
 
 	// private variables 
 	// (reusable temp variables; saving memory)
@@ -17,17 +22,22 @@ public class AnimalController : MonoBehaviour {
 	private int randDir;
 	private Vector2 tempVector;
 	private ArrayList validDirections;
+	private Collider2D closestLure;
+	private float distToClosestLure;
+	private float overlapCheckRadius;
 	#endregion
 
 	#region methods
 	// Use this for initialization
 	void Start () {
 		//transform.position = new Vector2 (50.0f, 50.0f);
+		attracted = false;
 		direction = Direction.North;
 		velocity = new Vector2 (0.0f, stepSize);
 		collisionResults = new Collider2D[50];
 		validDirections = new ArrayList ();
 		tempVector = Vector2.zero;
+		distToClosestLure = attractionRadius + 50.0f;
 	}
 
 	// Update is called once per frame
@@ -35,14 +45,47 @@ public class AnimalController : MonoBehaviour {
 	// TODO: collision handling for different types of colliders (walls, escape pods, lures)
 	void Update () {
 
+		#region attraction handling
+
+		// check to see if there are any lures within the attraction radius
+		// if the animal is already attracted by a lure, we only need to check
+		// for new lures that are closer (for efficiency)
+		if (!attracted)
+			overlapCheckRadius = attractionRadius;
+		else
+			overlapCheckRadius = distToClosestLure;
+
+		attracted = false;
+		collisionResults = new Collider2D[50];
+		if(Physics2D.OverlapCircleNonAlloc(transform.position, overlapCheckRadius, collisionResults)!=0){
+			foreach (Collider2D collider in collisionResults){
+				if (collider.GetComponents<LureController>().Length != 0){
+
+					// set the animal's attraction
+					if(!attracted)
+						attracted = true;
+
+					// if the attraction radius is nonempty, find the closest lure
+					if (Vector2.Distance(transform.position, collider.transform.position) < distToClosestLure){
+						closestLure = collider;
+						distToClosestLure = Vector2.Distance(transform.position, collider.transform.position);
+					}
+				}
+			}
+		}
+		#endregion
+
+		#region collision handling
 		// If there would be a collision, probabilistically change the animal's direction (can't stay in same direction)
 		// For now, all objects are treated as walls
+		collisionResults = new Collider2D[50];
 		if (Physics2D.OverlapPointNonAlloc (transform.position + (Vector3)velocity, collisionResults) != 0) {
 
 			// Populate the list of valid directions
 			if(direction != Direction.North){
 				tempVector.x = 0.0f;
 				tempVector.y = stepSize * Time.deltaTime;
+				collisionResults = new Collider2D[50];
 				if (Physics2D.OverlapPointNonAlloc (transform.position + (Vector3)tempVector, collisionResults) != 0)
 					validDirections.Add (Direction.North);
 			}
@@ -50,6 +93,7 @@ public class AnimalController : MonoBehaviour {
 			if(direction != Direction.South){
 				tempVector.x = 0;
 				tempVector.y = -stepSize * Time.deltaTime;
+				collisionResults = new Collider2D[50];
 				if (Physics2D.OverlapPointNonAlloc (transform.position + (Vector3)tempVector, collisionResults) != 0)
 					validDirections.Add (Direction.South);
 			}
@@ -57,6 +101,7 @@ public class AnimalController : MonoBehaviour {
 			if(direction != Direction.East){
 				tempVector.x = stepSize * Time.deltaTime;
 				tempVector.y = 0;
+				collisionResults = new Collider2D[50];
 				if (Physics2D.OverlapPointNonAlloc (transform.position + (Vector3)tempVector, collisionResults) != 0)
 					validDirections.Add (Direction.East);
 			}
@@ -64,6 +109,7 @@ public class AnimalController : MonoBehaviour {
 			if(direction != Direction.West){
 				tempVector.x = -stepSize * Time.deltaTime;
 				tempVector.y = 0;
+				collisionResults = new Collider2D[50];
 				if (Physics2D.OverlapPointNonAlloc (transform.position + (Vector3)tempVector, collisionResults) != 0)
 					validDirections.Add (Direction.West);
 			}
@@ -103,9 +149,11 @@ public class AnimalController : MonoBehaviour {
 				break;
 			}
 		}
+		#endregion
 
 		// Regardless of whether or not the velocity has changed, update the position
 		transform.position += (Vector3)velocity;
 	}
+
 	#endregion
 }
