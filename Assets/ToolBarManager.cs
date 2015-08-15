@@ -9,6 +9,9 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	GraphicRaycaster graphicRaycaster;
 	#endregion
 
+	#region instance variables
+	#endregion
+
 	// Use this for initialization
 	void Start () {
 		graphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
@@ -25,6 +28,7 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	}
 
 	public void OnPointerDown(PointerEventData eventData){
+		eventData.selectedObject = eventData.pointerCurrentRaycast.gameObject;
 		Debug.Log("Clicked on something");
 	}
 
@@ -37,10 +41,13 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	}
 
 	public void OnDrag(PointerEventData eventData){
+		eventData.selectedObject.transform.position = new Vector3 (eventData.position.x, eventData.position.y);
 		Debug.Log("Dragging Has started");
 	}
 
 	public void OnDrop(PointerEventData eventData){
+		Vector3 droppedAt = Camera.main.ViewportToWorldPoint ();
+
 		Debug.Log ("Dropped drug thing");
 	}
 }
