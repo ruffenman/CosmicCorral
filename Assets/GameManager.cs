@@ -4,20 +4,31 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class GameManager : MonoBehaviour {
-	private MapManager currentMap;
-	private AnimalController animController;
-	private ToolBarManager toolbar;
+
+	public static MapManager map { get { return s_instance.m_map; } }
+	public static ToolBarManager toolbar { get { return s_instance.m_toolbar; } }
+	public static SoundManager soundManager { get { return s_instance.m_soundManager; } }
+
+	private void Awake()
+	{
+		if(s_instance == null)
+		{
+			s_instance = this;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
 		DontDestroyOnLoad (this.gameObject);
 
-		animController = Instantiate (m_AnimalPrefab);
-		currentMap = Instantiate (m_MapManagerPrefab);
-		toolbar = Instantiate (m_TooBarPrefab);
-
-		graphicRaycaster = new GameObject ("UI_raycaster", typeof(GraphicRaycaster)).GetComponent<GraphicRaycaster>();
-		DontDestroyOnLoad (graphicRaycaster.gameObject);
+		m_map = Instantiate (m_MapManagerPrefab);
+		m_toolbar = Instantiate (m_TooBarPrefab);
+		m_soundManager = Instantiate<SoundManager>(m_soundManagerPrefab);
+		DontDestroyOnLoad(m_soundManager.gameObject);
 	}
 	
 	// Update is called once per frame
@@ -28,9 +39,13 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private MapManager m_MapManagerPrefab;
 	[SerializeField]
-	private AnimalController m_AnimalPrefab;
-	[SerializeField]
 	private ToolBarManager m_TooBarPrefab;
+	[SerializeField]
+	private SoundManager m_soundManagerPrefab;
 
-	private GraphicRaycaster graphicRaycaster;
+	private MapManager m_map;
+	private ToolBarManager m_toolbar;
+	private SoundManager m_soundManager;
+
+	private static GameManager s_instance;
 }
