@@ -7,10 +7,9 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 							  IDropHandler, IPointerDownHandler, IPointerEnterHandler {
 	#region instance variables
 	GraphicRaycaster graphicRaycaster;
+
 	#endregion
 
-	#region instance variables
-	#endregion
 
 	// Use this for initialization
 	void Start () {
@@ -46,8 +45,8 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	}
 
 	public void OnDrop(PointerEventData eventData){
-		Vector3 droppedAt = Camera.main.ViewportToWorldPoint ();
-
+		Vector3 droppedAt = Camera.main.ScreenToWorldPoint (eventData.selectedObject.transform.position);
+		GameManager.map.DropToolbarItemAtPosition(eventData.selectedObject.gameObject, droppedAt); 
 		Debug.Log ("Dropped drug thing");
 	}
 }
