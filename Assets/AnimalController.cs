@@ -20,6 +20,7 @@ public class AnimalController : MonoBehaviour {
 	#region methods
 	// Use this for initialization
 	void Start () {
+		transform.position = new Vector2 (50.0f, 50.0f);
 		direction = Direction.North;
 		velocity = new Vector2 (0.0f, stepSize);
 		collisionResults = new Collider2D[50];
@@ -61,12 +62,12 @@ public class AnimalController : MonoBehaviour {
 			switch (direction) {
 				case Direction.North:
 					velocity.x = 0;
-					velocity.y = -stepSize;
+					velocity.y = stepSize;
 					break;
 
 				case Direction.South:
 					velocity.x = 0;
-					velocity.y = stepSize;
+					velocity.y = -stepSize;
 					break;
 
 				case Direction.East:
