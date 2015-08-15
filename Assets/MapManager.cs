@@ -26,7 +26,9 @@ public class MapManager : MonoBehaviour {
 
 	public void DropToolbarItemAtPosition(GameObject toolbarItem, Vector3 worldPos)
 	{
-
+		TileCoord tileCoord = GameManager.map.GetTileCoordFromWorldPos(worldPos);
+		Vector3 tileWorldPos = GameManager.map.GetWorldPositionFromTileCoord(tileCoord);
+		Debug.LogFormat("Toolbar item added to map at tile: {0},{1} pos: {2},{3}", tileCoord.x, tileCoord.y, tileWorldPos.x, tileWorldPos.y);
 	}
 
 	public int width {get{return m_sceneTiledMap.NumTilesWide;}}
