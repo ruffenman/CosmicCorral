@@ -24,11 +24,13 @@ public class MapManager : MonoBehaviour {
 		return worldPos;
 	}
 
-	public void DropToolbarItemAtPosition(GameObject toolbarItem, Vector3 worldPos)
+	public bool DropToolbarItemAtPosition(GameObject toolbarItem, Vector3 worldPos)
 	{
 		TileCoord tileCoord = GameManager.map.GetTileCoordFromWorldPos(worldPos);
 		Vector3 tileWorldPos = GameManager.map.GetWorldPositionFromTileCoord(tileCoord);
 		Debug.LogFormat("Toolbar item added to map at tile: {0},{1} pos: {2},{3}", tileCoord.x, tileCoord.y, tileWorldPos.x, tileWorldPos.y);
+		//TODO Add a check for tile 
+		return true;
 	}
 
 	public int width {get{return m_sceneTiledMap.NumTilesWide;}}
@@ -41,7 +43,9 @@ public class MapManager : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {}
+	void Start () {
 
+	}
+	public Tile[][] mapTile; 
 	private Tiled2Unity.TiledMap m_sceneTiledMap;
 }
