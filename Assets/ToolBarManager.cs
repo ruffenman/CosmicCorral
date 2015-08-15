@@ -22,13 +22,6 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
 	}
 
-	bool isMouseAble(GameObject gameobj) {
-		if (gameobj.layer == LayerMask.NameToLayer("MouseAble"))
-			return true;
-		else
-			return false;
-	}
-
 	public void OnPointerEnter(PointerEventData eventData){
 		Debug.Log ("Mouse is over something");
 	}
