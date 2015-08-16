@@ -67,6 +67,12 @@ public class MapManager : MonoBehaviour {
 						if (collider.gameObject.GetComponents<Door> ().Length!=0){
 							mapTile [x,y].type = Tile.TileType.GenericDoor;
 						}
+
+						// if position maps to a door, make it a door
+						if (collider.gameObject.GetComponents<Hazard> ().Length!=0){
+							mapTile [x,y].type = Tile.TileType.Hazard;
+						}
+
 						// if position maps to another collision, make it unwalkable
 						else{
 							mapTile [x,y].isWalkable = false;
