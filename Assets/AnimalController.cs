@@ -10,11 +10,11 @@ public class AnimalController : MonoBehaviour {
 
 	// public variables
 	[SerializeField]
-	private bool attracted;
+	public bool attracted;
 	[SerializeField]
-	private Direction direction;
+	public Direction direction;
 	[SerializeField]
-	private Vector2 velocity;
+	public Vector2 velocity;
 
 	// private variables 
 	private int randDir;
