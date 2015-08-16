@@ -51,6 +51,9 @@ public class AnimalController : MonoBehaviour {
 			dx = transform.position.x - closestLure.transform.position.x;
 			dy = transform.position.y - closestLure.transform.position.y;
 
+			if(Mathf.Abs (dx) < 0.5 && Mathf.Abs (dy) < 0.5)
+				Destroy (closestLure.gameObject);
+
 			// move on the x axis
 			if(Mathf.Abs (dx) > Mathf.Abs (dy)){ 
 				if(dx > 0){
