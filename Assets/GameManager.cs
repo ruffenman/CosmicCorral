@@ -73,8 +73,13 @@ public class GameManager : MonoBehaviour {
 				startGamePlay = true;
 			}
 		}
-
+		
 		m_uiMenus.HideMenus(0.25f);
+
+		if(Application.loadedLevel == 0)
+		{
+			m_levelManager.StartLevel(1);
+		}
 	}
 
 	private void StartGameplay()

@@ -43,6 +43,7 @@ public class LevelManager : MonoBehaviour
 		Action onHidden;
 		onHidden = ()=>{
 			GameManager.uiMenus.OnScrimHidden -= onHidden;
+			m_currentLevelIndex = levelIndex;
 			m_isCompleted = false;
 			if(LevelStarted != null) LevelStarted();
 		};
