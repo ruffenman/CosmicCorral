@@ -29,15 +29,32 @@ public class ToolBarManager : MonoBehaviour
 	
 	// Update is called once per frame
 	private void Update () {
-		if(Input.GetMouseButtonDown(0) && m_selectedItem != null && m_selectedItem.count > 0)
+		if(Input.GetMouseButtonDown(0))
 		{
 			RectTransform panelRect = transform.FindChild("Panel").GetComponent<RectTransform>();
-			if(!RectTransformUtility.RectangleContainsScreenPoint(panelRect, (Vector2)Input.mousePosition, null))
+			if(!RectTransformUtility.RectangleContainsScreenPoint(panelRect, (Vector2)Input.mousePosition, null) && m_selectedItem != null && m_selectedItem.count > 0)
 			{
 				bool success = GameManager.map.DropToolbarItemAtPosition(m_selectedItem, Camera.main.ScreenToWorldPoint(Input.mousePosition));
 				if(success)
 				{
 					m_selectedItem.DecrementCount(1);
+					GameManager.soundManager.PlaySfx(SoundManager.SFX_PLACE_ITEM);
+				}
+				else
+				{
+					GameManager.soundManager.PlaySfx(SoundManager.SFX_CANCEL_ITEM);
+				}
+			}
+			else
+			{
+				bool onItem = false;
+				foreach(ToolBarItem item in m_items)
+				{
+					onItem = onItem || RectTransformUtility.RectangleContainsScreenPoint(item.GetComponent<RectTransform>(), (Vector2)Input.mousePosition, null);
+				}
+				if(!onItem && GameManager.levelManager.levelLoaded && m_selectedItem != null)
+				{
+					GameManager.soundManager.PlaySfx(SoundManager.SFX_CANCEL_ITEM);
 				}
 			}
 		}

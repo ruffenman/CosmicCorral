@@ -24,6 +24,7 @@ public class MapManager : MonoBehaviour {
 	{
 		Vector2 tileCoord = GameManager.map.GetTileCoordFromWorldPos(worldPos);
 		Vector3 tileWorldPos = GameManager.map.GetWorldPositionFromTileCoord(tileCoord);
+		Instantiate(toolbarItem.gameplayPrefab, tileWorldPos, Quaternion.identity);
 		Debug.LogFormat("Toolbar item added to map at tile: {0},{1} pos: {2},{3}", tileCoord.x, tileCoord.y, tileWorldPos.x, tileWorldPos.y);
 		//TODO Add a check for tile 
 		return true;
