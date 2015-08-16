@@ -150,8 +150,8 @@ public class AnimalController : MonoBehaviour {
 						}
 					}
 				} 
-				else 
-				{
+				//else 
+				//{
 					// If there would be a collision, probabilistically change the animal's direction (can't stay in same direction)
 					// For now, all objects are treated as walls
 					getAdjacentTileCoords(ref tileCoords, direction);
@@ -223,7 +223,7 @@ public class AnimalController : MonoBehaviour {
 							break;
 						}
 					}
-				}
+				//}
 			}
 
 			// Regardless of whether or not the velocity has changed, update the position
