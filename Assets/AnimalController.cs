@@ -31,7 +31,7 @@ public class AnimalController : MonoBehaviour {
 	void Start () {
 		attracted = false;
 		direction = Direction.South;
-		velocity = new Vector2 (0.0f, -stepSize);
+		velocity = new Vector2 (0.0f, -0.03f);
 		validDirections = new ArrayList ();
 		tempVector = Vector2.zero;
 		distToClosestLure = attractionRadius + 50.0f;
@@ -183,8 +183,7 @@ public class AnimalController : MonoBehaviour {
 			overlapCheckRadius = attractionRadius;
 		else
 			overlapCheckRadius = distToClosestLure;
-
-		//Debug.Log ("overlapCheckRadius: " + overlapCheckRadius.ToString ());
+		
 		attracted = false;
 		Collider2D[] overlapList = Physics2D.OverlapCircleAll (transform.position, overlapCheckRadius);
 		if (overlapList.Length != 0) {
