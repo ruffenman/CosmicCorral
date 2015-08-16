@@ -110,7 +110,9 @@ public class SoundManager : MonoBehaviour
 	}
 	
 	private void Awake()
-	{
+	{		
+		DontDestroyOnLoad(gameObject);
+
 		instance = this;
 		
 		mMusicByName = new Dictionary<string, AudioSource>();

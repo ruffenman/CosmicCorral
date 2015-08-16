@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 using System.Collections.Generic;
 
 public class UIMenus : MonoBehaviour {
@@ -9,6 +10,33 @@ public class UIMenus : MonoBehaviour {
 		StartScreen,
 		WinScreen,
 		LoseScreen,
+	}
+
+	public Action OnScrimShown;
+	public Action OnScrimHidden;
+
+	public void SetShowScrim(bool shouldShow, float transitionTime = 0.5f)
+	{
+		if(m_scrimTweenId != -1)
+		{
+			LeanTween.cancel(m_scrim.gameObject, m_scrimTweenId);
+		}
+
+		float alphaTarget = shouldShow ? 1 : 0;
+
+		LeanTween.value(m_scrim.gameObject, m_scrim.color.a, alphaTarget, transitionTime)
+			.setOnUpdate((float newVal)=>{Color newColor = m_scrim.color; newColor.a = newVal; m_scrim.color = newColor;})
+			.setOnComplete(
+				()=>{
+					if(shouldShow)
+					{
+						if(OnScrimShown != null) OnScrimShown();
+					}
+					else
+					{
+						if(OnScrimHidden != null) OnScrimHidden();
+					}
+				});
 	}
 
 	public void ShowMenu(MenuScreen menuScreen, float transitionTime = 0.5f)
@@ -41,8 +69,18 @@ public class UIMenus : MonoBehaviour {
 		m_currentMenu = null;
 	}
 
+	private void Awake()
+	{
+		m_scrimTweenId = -1;
+		
+		DontDestroyOnLoad(gameObject);
+	}
+
 	private CanvasGroup m_currentMenu;
+	private int m_scrimTweenId;
 
 	[SerializeField]
 	private List<CanvasGroup> m_menuScreens;
+	[SerializeField]
+	private UnityEngine.UI.Image m_scrim;
 }
