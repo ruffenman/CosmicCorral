@@ -4,6 +4,7 @@ using System;
 
 public class LevelManager : MonoBehaviour
 {
+	public int numLives = 3;
 	public bool levelLoaded = false;
 
 	public void Win()

@@ -54,7 +54,7 @@ public class MapManager : MonoBehaviour {
 		for (int x = 0; x < ((Tiled2Unity.TiledMap)m_sceneTiledMap).NumTilesWide; x++) {
 			for (int y = 0; y < ((Tiled2Unity.TiledMap)m_sceneTiledMap).NumTilesHigh; y++){
 				mapTile [x,y] = new Tile();
-				mapTile [x,y].isDoor = Tile.Door.NotDoor;
+				mapTile [x,y].type = Tile.TileType.NotDoor;
 			
 				// if position maps to a door, make it a door
 				tileCenter = GetWorldPositionFromTileCoord(new Vector2(x, y));
@@ -62,7 +62,7 @@ public class MapManager : MonoBehaviour {
 				if (overlapList.Length != 0) {
 					foreach (Collider2D collider in overlapList) {
 						if (collider.gameObject.GetComponents<Door> ().Length!=0){
-							mapTile [x,y].isDoor = Tile.Door.GenericDoor;
+							mapTile [x,y].type = Tile.TileType.GenericDoor;
 						}
 					}
 				}

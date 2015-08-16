@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class Tile {
-	public enum Door{
-		NotDoor, GatorDoor, PossumDoor, FlamingoDoor, GenericDoor  
+	public enum TileType{
+		NotDoor, GatorDoor, PossumDoor, FlamingoDoor, GenericDoor, Hazard  
 	};
 
 	[SerializeField]
@@ -11,7 +11,7 @@ public class Tile {
 	[SerializeField]
 	private bool isSpawnPoint = false;
 	[SerializeField]
-	public Door isDoor = Door.NotDoor;  
+	public TileType type = TileType.NotDoor;  
 
 	// Use this for initialization
 	void Start () {

@@ -41,12 +41,29 @@ public class AnimalController : MonoBehaviour {
 	// TODO: collision handling for different types of colliders (walls, escape pods, lures)
 	void Update () {
 
-		// check to see if the animal is in a door
+
 		if (GameManager.levelManager.levelLoaded) {
+			// check to see if the animal is in a door
 			Vector2 tileCoords = GameManager.map.GetTileCoordFromWorldPos (transform.position + (Vector3)velocity);
-			if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].isDoor == Tile.Door.GenericDoor) {
+			if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].type == Tile.TileType.GenericDoor)
+			{
 				velocity = Vector2.zero;
-			} else {
+			} 
+			// Check to see if the animal has hit a hazard
+			else if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].type == Tile.TileType.Hazard)
+			{
+				// player loses a life
+				GameManager.levelManager.numLives--;
+				if(GameManager.levelManager.numLives == 0)
+					GameManager.levelManager.Lose ();
+
+				// animal is removed from the game
+
+				// spawn a new animal
+
+			}
+
+			else {
 				checkForAttraction (ref attracted, ref closestLure, ref distToClosestLure);
 
 				if (attracted) {
