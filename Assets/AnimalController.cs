@@ -109,28 +109,28 @@ public class AnimalController : MonoBehaviour {
 				if (direction != Direction.North) {
 					tempVector.x = 0.0f;
 					tempVector.y = stepSize * Time.deltaTime;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.North);
 				}
 
 				if (direction != Direction.South) {
 					tempVector.x = 0;
 					tempVector.y = -stepSize * Time.deltaTime;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.South);
 				}
 
 				if (direction != Direction.East) {
 					tempVector.x = stepSize * Time.deltaTime;
 					tempVector.y = 0;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.East);
 				}
 
 				if (direction != Direction.West) {
 					tempVector.x = -stepSize * Time.deltaTime;
 					tempVector.y = 0;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.West);
 				}
 
