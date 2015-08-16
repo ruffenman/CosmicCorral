@@ -38,14 +38,20 @@ public class MapManager : MonoBehaviour {
 
 	private void Awake()
 	{
-		m_sceneTiledMap = GameObject.FindObjectOfType<Tiled2Unity.TiledMap>();
-		if(m_sceneTiledMap == null) Debug.LogError("No TiledMap was found in the scene");
+
 	}
 
 	// Use this for initialization
 	void Start () {
-
+		GameManager.levelManager.LevelStarted += OnLevelStarted;
 	}
+
+	private void OnLevelStarted()
+	{		
+		m_sceneTiledMap = GameObject.FindObjectOfType<Tiled2Unity.TiledMap>();
+		if(m_sceneTiledMap == null) Debug.LogError("No TiledMap was found in the scene");
+	}
+
 	public Tile[][] mapTile; 
 	private Tiled2Unity.TiledMap m_sceneTiledMap;
 }
