@@ -24,12 +24,14 @@ public class AnimalController : MonoBehaviour {
 	private float distToClosestLure;
 	private float overlapCheckRadius;
 	private float dx, dy;
+	private bool respawn;
 	#endregion
 
 	#region methods
 	// Use this for initialization
 	void Start () {
 		attracted = false;
+		respawn = false;
 		direction = Direction.North;
 		velocity = new Vector2 (0.0f, 0.03f);
 		validDirections = new ArrayList ();
@@ -43,11 +45,29 @@ public class AnimalController : MonoBehaviour {
 
 
 		if (GameManager.levelManager.levelLoaded) {
+
+			// respawn if necessary
+			if(respawn)
+			{
+				GameObject respawnPoint = GameObject.FindWithTag("Respawn");
+				if(respawnPoint!=null)
+				{
+					transform.position = respawnPoint.transform.position;
+					direction = Direction.North;
+					velocity = new Vector2 (0.0f, 0.03f);
+					respawn = false;
+				}
+			}
+
 			// check to see if the animal is in a door
 			Vector2 tileCoords = GameManager.map.GetTileCoordFromWorldPos (transform.position + (Vector3)velocity);
 			if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].type == Tile.TileType.GenericDoor)
 			{
 				velocity = Vector2.zero;
+				GameManager.levelManager.numAnimalsRescued++;
+				respawn = true;
+				if(GameManager.levelManager.numAnimalsRescued >=3)
+					GameManager.levelManager.Win ();
 			} 
 			// Check to see if the animal has hit a hazard
 			else if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].type == Tile.TileType.Hazard)
@@ -56,10 +76,13 @@ public class AnimalController : MonoBehaviour {
 				GameManager.levelManager.numLives--;
 				if(GameManager.levelManager.numLives == 0)
 					GameManager.levelManager.Lose ();
+				//else{
 
+				//}
 				// animal is removed from the game
 
 				// spawn a new animal
+				respawn = true;
 
 			}
 
