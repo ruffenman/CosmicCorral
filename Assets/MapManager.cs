@@ -20,10 +20,11 @@ public class MapManager : MonoBehaviour {
 		return worldPos;
 	}
 
-	public bool DropToolbarItemAtPosition(GameObject toolbarItem, Vector3 worldPos)
+	public bool DropToolbarItemAtPosition(ToolBarItem toolbarItem, Vector3 worldPos)
 	{
 		Vector2 tileCoord = GameManager.map.GetTileCoordFromWorldPos(worldPos);
 		Vector3 tileWorldPos = GameManager.map.GetWorldPositionFromTileCoord(tileCoord);
+		Instantiate(toolbarItem.gameplayPrefab, tileWorldPos, Quaternion.identity);
 		Debug.LogFormat("Toolbar item added to map at tile: {0},{1} pos: {2},{3}", tileCoord.x, tileCoord.y, tileWorldPos.x, tileWorldPos.y);
 		//TODO Add a check for tile 
 		return true;

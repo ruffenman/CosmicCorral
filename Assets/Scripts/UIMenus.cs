@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class UIMenus : MonoBehaviour {
 
@@ -11,6 +12,8 @@ public class UIMenus : MonoBehaviour {
 		WinScreen,
 		LoseScreen,
 	}
+
+	public List<CanvasGroup> screens { get { return m_menuScreens; }}
 
 	public Action OnScrimShown;
 	public Action OnScrimHidden;
@@ -74,13 +77,17 @@ public class UIMenus : MonoBehaviour {
 		m_scrimTweenId = -1;
 		
 		DontDestroyOnLoad(gameObject);
+
+		Text cta = screens[0].transform.FindChild("Label").GetComponent<Text>();
+		cta.color = new Color(1, 1, 1, 0);
+		int pulseTweenId = LeanTween.textAlpha(cta.rectTransform, 1, 0.5f).setEase(LeanTweenType.easeInOutSine).setLoopPingPong().id;
 	}
 
 	private CanvasGroup m_currentMenu;
 	private int m_scrimTweenId;
 
 	[SerializeField]
-	private List<CanvasGroup> m_menuScreens;
+	public List<CanvasGroup> m_menuScreens;
 	[SerializeField]
 	private UnityEngine.UI.Image m_scrim;
 }
