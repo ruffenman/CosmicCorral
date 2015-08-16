@@ -5,8 +5,8 @@ public class AnimalController : MonoBehaviour {
 
 	#region instance variables
 	public enum Direction {North, South, East, West};
-	const float stepSize = 0.1f;
-	const float attractionRadius = 200;
+	const float stepSize = 2f;
+	const float attractionRadius = 10.0f;
 
 	// public variables
 	[SerializeField]
@@ -29,10 +29,9 @@ public class AnimalController : MonoBehaviour {
 	#region methods
 	// Use this for initialization
 	void Start () {
-		//transform.position = new Vector2 (50.0f, 50.0f);
 		attracted = false;
-		direction = Direction.North;
-		velocity = new Vector2 (0.0f, stepSize);
+		direction = Direction.South;
+		velocity = new Vector2 (0.0f, -stepSize);
 		validDirections = new ArrayList ();
 		tempVector = Vector2.zero;
 		distToClosestLure = attractionRadius + 50.0f;
@@ -184,13 +183,14 @@ public class AnimalController : MonoBehaviour {
 			overlapCheckRadius = attractionRadius;
 		else
 			overlapCheckRadius = distToClosestLure;
-		
+
+		//Debug.Log ("overlapCheckRadius: " + overlapCheckRadius.ToString ());
 		attracted = false;
 		Collider2D[] overlapList = Physics2D.OverlapCircleAll (transform.position, overlapCheckRadius);
-		if (overlapList != null) {
+		if (overlapList.Length != 0) {
 			foreach (Collider2D collider in overlapList) {
-				if (collider.gameObject.GetComponents<LureController> () != null) {
-				
+				if (collider.gameObject.GetComponents<LureController> ().Length!=0) {
+
 					// set the animal's attraction
 					if (!attracted)
 						attracted = true;
@@ -210,7 +210,7 @@ public class AnimalController : MonoBehaviour {
 
 		tempVector.x = -stepSize * Time.deltaTime;
 		tempVector.y = 0;
-		if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
+		if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
 			direction = Direction.West;
 			velocity = tempVector;
 			return true;
@@ -221,10 +221,10 @@ public class AnimalController : MonoBehaviour {
 
 	// if there is no collision, set the new velocity and direction
 	bool tryMovingEast(ref Direction direction, ref Vector2 velocity){
-		
+
 		tempVector.x = stepSize * Time.deltaTime;
 		tempVector.y = 0;
-		if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
+		if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
 			direction = Direction.East;
 			velocity = tempVector;
 			return true;
@@ -238,7 +238,7 @@ public class AnimalController : MonoBehaviour {
 
 		tempVector.x = 0.0f;
 		tempVector.y = -stepSize * Time.deltaTime;
-		if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
+		if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
 			direction = Direction.South;
 			velocity = tempVector;
 			return true;
@@ -249,10 +249,10 @@ public class AnimalController : MonoBehaviour {
 
 	// if there is no collision, set the new velocity and direction
 	bool tryMovingNorth(ref Direction direction, ref Vector2 velocity){
-		
+
 		tempVector.x = 0.0f;
 		tempVector.y = stepSize * Time.deltaTime;
-		if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
+		if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector)){
 			direction = Direction.North;
 			velocity = tempVector;
 			return true;
