@@ -52,7 +52,7 @@ public class AnimalController : MonoBehaviour {
 				GameObject respawnPoint = GameObject.FindWithTag("Respawn");
 				if(respawnPoint!=null)
 				{
-					transform.position = respawnPoint.transform.position;
+					transform.position = (Vector3)(new Vector2(respawnPoint.transform.position.x, respawnPoint.transform.position.y));
 					direction = Direction.North;
 					velocity = new Vector2 (0.0f, 0.03f);
 					respawn = false;
