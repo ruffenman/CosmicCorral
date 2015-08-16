@@ -20,7 +20,7 @@ public class MapManager : MonoBehaviour {
 		return worldPos;
 	}
 
-	public bool DropToolbarItemAtPosition(GameObject toolbarItem, Vector3 worldPos)
+	public bool DropToolbarItemAtPosition(ToolBarItem toolbarItem, Vector3 worldPos)
 	{
 		Vector2 tileCoord = GameManager.map.GetTileCoordFromWorldPos(worldPos);
 		Vector3 tileWorldPos = GameManager.map.GetWorldPositionFromTileCoord(tileCoord);

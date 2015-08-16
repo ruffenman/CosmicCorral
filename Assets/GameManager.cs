@@ -78,14 +78,19 @@ public class GameManager : MonoBehaviour {
 				startGamePlay = true;
 			}
 		}
-		
-		m_uiMenus.HideMenus(0.25f);
 
 		if (Application.loadedLevel == 0) {
 			m_levelManager.StartLevel (1);
 		} else {
 			m_levelManager.StartLevel (Application.loadedLevel);
 		}
+
+		Action onShown;
+		onShown = ()=> {
+			m_uiMenus.OnScrimShown -= onShown;	
+			m_uiMenus.HideMenus(0);
+		};
+		m_uiMenus.OnScrimShown += onShown;
 	}
 
 	private void StartGameplay()
@@ -95,7 +100,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void OnLevelStarted()
-	{
+	{		
 		Debug.LogFormat("Level Started!: {0}s", m_levelManager.currentLevelIndex);
 	}
 	

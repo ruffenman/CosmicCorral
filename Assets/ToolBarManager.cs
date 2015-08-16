@@ -29,7 +29,18 @@ public class ToolBarManager : MonoBehaviour
 	
 	// Update is called once per frame
 	private void Update () {
-
+		if(Input.GetMouseButtonDown(0) && m_selectedItem != null && m_selectedItem.count > 0)
+		{
+			RectTransform panelRect = transform.FindChild("Panel").GetComponent<RectTransform>();
+			if(!RectTransformUtility.RectangleContainsScreenPoint(panelRect, (Vector2)Input.mousePosition, null))
+			{
+				bool success = GameManager.map.DropToolbarItemAtPosition(m_selectedItem, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+				if(success)
+				{
+					m_selectedItem.DecrementCount(1);
+				}
+			}
+		}
 	}
 
 	private void OnItemSelected(ToolBarItem item)
