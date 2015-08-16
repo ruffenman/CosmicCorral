@@ -13,6 +13,7 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	// Use this for initialization
 	void Start () {
 		graphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
+
 		DontDestroyOnLoad (graphicRaycaster.gameObject);
 	}
 	
@@ -26,6 +27,7 @@ public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	}
 
 	public void OnPointerDown(PointerEventData eventData){
+
 		eventData.selectedObject = eventData.pointerCurrentRaycast.gameObject;
 		Debug.Log("Clicked on something");
 	}
