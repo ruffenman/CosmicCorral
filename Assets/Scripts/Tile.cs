@@ -7,7 +7,7 @@ public class Tile {
 	};
 
 	[SerializeField]
-	private bool isWalkable = true;
+	public bool isWalkable = true;
 	[SerializeField]
 	private bool isSpawnPoint = false;
 	[SerializeField]
