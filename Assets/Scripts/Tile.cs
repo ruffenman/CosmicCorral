@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
-	enum Door{
-		NotDoor, GatorDoor, PossumDoor, FlamingoDoor  
+public class Tile {
+	public enum Door{
+		NotDoor, GatorDoor, PossumDoor, FlamingoDoor, GenericDoor  
 	};
 
 	[SerializeField]
@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour {
 	[SerializeField]
 	private bool isSpawnPoint = false;
 	[SerializeField]
-	private Door isDoor = Door.NotDoor;  
+	public Door isDoor = Door.NotDoor;  
 
 	// Use this for initialization
 	void Start () {

@@ -2,22 +2,18 @@
 using System.Collections;
 
 public class MapManager : MonoBehaviour {
-	public struct TileCoord
-	{
-		public int x;
-		public int y;
-	}
 
-	public TileCoord GetTileCoordFromWorldPos(Vector3 worldPos)
+
+	public Vector2 GetTileCoordFromWorldPos(Vector3 worldPos)
 	{
-		TileCoord coords = new TileCoord();
-		coords.x = (int)Mathf.Floor(worldPos.x);
+		Vector2 coords = new Vector2();
+		coords.x = Mathf.Floor(worldPos.x);
 		float mapBottom = -height;
-		coords.y = (int)Mathf.Floor(worldPos.y - mapBottom);
+		coords.y = Mathf.Floor(worldPos.y - mapBottom);
 		return coords;
 	} 
 
-	public Vector3 GetWorldPositionFromTileCoord(TileCoord coord)
+	public Vector3 GetWorldPositionFromTileCoord(Vector2 coord)
 	{		
 		float mapBottom = -height;
 		Vector3 worldPos = new Vector3(coord.x + 0.5f, mapBottom + coord.y + 0.5f);
@@ -26,7 +22,7 @@ public class MapManager : MonoBehaviour {
 
 	public bool DropToolbarItemAtPosition(GameObject toolbarItem, Vector3 worldPos)
 	{
-		TileCoord tileCoord = GameManager.map.GetTileCoordFromWorldPos(worldPos);
+		Vector2 tileCoord = GameManager.map.GetTileCoordFromWorldPos(worldPos);
 		Vector3 tileWorldPos = GameManager.map.GetWorldPositionFromTileCoord(tileCoord);
 		Debug.LogFormat("Toolbar item added to map at tile: {0},{1} pos: {2},{3}", tileCoord.x, tileCoord.y, tileWorldPos.x, tileWorldPos.y);
 		//TODO Add a check for tile 
@@ -38,7 +34,7 @@ public class MapManager : MonoBehaviour {
 
 	private void Awake()
 	{
-
+		DontDestroyOnLoad (gameObject);
 	}
 
 	// Use this for initialization
@@ -50,8 +46,30 @@ public class MapManager : MonoBehaviour {
 	{		
 		m_sceneTiledMap = GameObject.FindObjectOfType<Tiled2Unity.TiledMap>();
 		if(m_sceneTiledMap == null) Debug.LogError("No TiledMap was found in the scene");
+
+
+		// Initialize tile array
+		Vector3 tileCenter;
+		mapTile = new Tile[((Tiled2Unity.TiledMap)(m_sceneTiledMap)).NumTilesWide, ((Tiled2Unity.TiledMap)m_sceneTiledMap).NumTilesHigh];
+		for (int x = 0; x < ((Tiled2Unity.TiledMap)m_sceneTiledMap).NumTilesWide; x++) {
+			for (int y = 0; y < ((Tiled2Unity.TiledMap)m_sceneTiledMap).NumTilesHigh; y++){
+				mapTile [x,y] = new Tile();
+				mapTile [x,y].isDoor = Tile.Door.NotDoor;
+			
+				// if position maps to a door, make it a door
+				tileCenter = GetWorldPositionFromTileCoord(new Vector2(x, y));
+				Collider2D[] overlapList = Physics2D.OverlapPointAll (tileCenter);
+				if (overlapList.Length != 0) {
+					foreach (Collider2D collider in overlapList) {
+						if (collider.gameObject.GetComponents<Door> ().Length!=0){
+							mapTile [x,y].isDoor = Tile.Door.GenericDoor;
+						}
+					}
+				}
+			}
+		}
 	}
 
-	public Tile[][] mapTile; 
+	public Tile[,] mapTile; 
 	private Tiled2Unity.TiledMap m_sceneTiledMap;
 }

@@ -30,151 +30,158 @@ public class AnimalController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		attracted = false;
-		direction = Direction.South;
-		velocity = new Vector2 (0.0f, -0.03f);
+		direction = Direction.North;
+		velocity = new Vector2 (0.0f, 0.03f);
 		validDirections = new ArrayList ();
 		tempVector = Vector2.zero;
 		distToClosestLure = attractionRadius + 50.0f;
 	}
 
 	// Update is called once per frame
-	// TODO: add lure attraction (later)
 	// TODO: collision handling for different types of colliders (walls, escape pods, lures)
 	void Update () {
 
-		checkForAttraction(ref attracted, ref closestLure, ref distToClosestLure);
+		// check to see if the animal is in a door
+		if (GameManager.levelManager.levelLoaded) {
+			Vector2 tileCoords = GameManager.map.GetTileCoordFromWorldPos (transform.position + (Vector3)velocity);
+			if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].isDoor == Tile.Door.GenericDoor) {
+				velocity = Vector2.zero;
+			} else {
+				checkForAttraction (ref attracted, ref closestLure, ref distToClosestLure);
 
-		if (attracted) {
+				if (attracted) {
 
-			// try to move towards the lure 
-			// otherwise move along the opposite axis if there is a dx / dy or just keep moving straight
-			dx = transform.position.x - closestLure.transform.position.x;
-			dy = transform.position.y - closestLure.transform.position.y;
+					// try to move towards the lure 
+					// otherwise move along the opposite axis if there is a dx / dy or just keep moving straight
+					dx = transform.position.x - closestLure.transform.position.x;
+					dy = transform.position.y - closestLure.transform.position.y;
 
-			if(Mathf.Abs (dx) < 0.5 && Mathf.Abs (dy) < 0.5)
-				Destroy (closestLure.gameObject);
+					if (Mathf.Abs (dx) < 0.5 && Mathf.Abs (dy) < 0.5)
+						Destroy (closestLure.gameObject);
 
-			// move on the x axis
-			if(Mathf.Abs (dx) > Mathf.Abs (dy)){ 
-				if(dx > 0){
-					if(!tryMovingWest(ref direction, ref velocity)){
-						if(dy > 0){
-							tryMovingSouth (ref direction, ref velocity);
-						}
-						else{
-							tryMovingNorth (ref direction, ref velocity);
-						}
+					// move on the x axis
+					if (Mathf.Abs (dx) > Mathf.Abs (dy)) { 
+						if (dx > 0) {
+							if (!tryMovingWest (ref direction, ref velocity)) {
+								if (dy > 0) {
+									tryMovingSouth (ref direction, ref velocity);
+								} else {
+									tryMovingNorth (ref direction, ref velocity);
+								}
+							}
+						} else {
+							if (!tryMovingEast (ref direction, ref velocity)) {
+								if (dy > 0) {
+									tryMovingSouth (ref direction, ref velocity);
+								} else {
+									tryMovingNorth (ref direction, ref velocity);
+								}
+							}
+						}	
 					}
-				}
-				else{
-					if(!tryMovingEast(ref direction, ref velocity)){
-						if(dy > 0){
-							tryMovingSouth (ref direction, ref velocity);
-						}
-						else{
-							tryMovingNorth (ref direction, ref velocity);
-						}
-					}
-				}	
-			}
 
 			// move on the y axis
-			else{
-				if(dy > 0){
-					if(!tryMovingSouth(ref direction, ref velocity)){
-						if(dx > 0){
-							tryMovingWest (ref direction, ref velocity);
-						}
-						else{
-							tryMovingEast (ref direction, ref velocity);
+			else {
+						if (dy > 0) {
+							if (!tryMovingSouth (ref direction, ref velocity)) {
+								if (dx > 0) {
+									tryMovingWest (ref direction, ref velocity);
+								} else {
+									tryMovingEast (ref direction, ref velocity);
+								}
+							}
+						} else {
+							if (!tryMovingNorth (ref direction, ref velocity)) {
+								if (dx > 0) {
+									tryMovingWest (ref direction, ref velocity);
+								} else {
+									tryMovingEast (ref direction, ref velocity);
+								}
+							}
 						}
 					}
-				}
-				else{
-					if(!tryMovingNorth(ref direction, ref velocity)){
-						if(dx > 0){
-							tryMovingWest (ref direction, ref velocity);
-						}
-						else{
-							tryMovingEast (ref direction, ref velocity);
-						}
-					}
-				}
-			}
-		} 
-		else {
+				} else {
 	
-			// If there would be a collision, probabilistically change the animal's direction (can't stay in same direction)
-			// For now, all objects are treated as walls
-			if (Physics2D.OverlapPoint (transform.position + (Vector3)velocity)) {
+					// If there would be a collision, probabilistically change the animal's direction (can't stay in same direction)
+					// For now, all objects are treated as walls
 
-				// Populate the list of valid directions
-				if (direction != Direction.North) {
-					tempVector.x = 0.0f;
-					tempVector.y = stepSize * Time.deltaTime;
-					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-						validDirections.Add (Direction.North);
-				}
+					Collider2D[] overlapList = Physics2D.OverlapPointAll (transform.position + (Vector3)velocity);
+					if (overlapList.Length != 0) {
+						foreach (Collider2D collider in overlapList) {
+							if (collider.gameObject.GetComponents<Door> ().Length!=0){
+					
 
-				if (direction != Direction.South) {
-					tempVector.x = 0;
-					tempVector.y = -stepSize * Time.deltaTime;
-					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-						validDirections.Add (Direction.South);
-				}
+								// Populate the list of valid directions
+								if (direction != Direction.North) {
+									tempVector.x = 0.0f;
+									tempVector.y = stepSize * Time.deltaTime;
+									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+										validDirections.Add (Direction.North);
+								}
 
-				if (direction != Direction.East) {
-					tempVector.x = stepSize * Time.deltaTime;
-					tempVector.y = 0;
-					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-						validDirections.Add (Direction.East);
-				}
+								if (direction != Direction.South) {
+									tempVector.x = 0;
+									tempVector.y = -stepSize * Time.deltaTime;
+									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+										validDirections.Add (Direction.South);
+								}
 
-				if (direction != Direction.West) {
-					tempVector.x = -stepSize * Time.deltaTime;
-					tempVector.y = 0;
-					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-						validDirections.Add (Direction.West);
-				}
+								if (direction != Direction.East) {
+									tempVector.x = stepSize * Time.deltaTime;
+									tempVector.y = 0;
+									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+										validDirections.Add (Direction.East);
+								}
 
-				// Randomly select an element from the list of valid directions, then empty the list
-				if (validDirections.Count > 0) {
-					randDir = Random.Range (0, validDirections.Count);
-					validDirections.Clear ();
-				} else
-					Debug.Log ("There are no valid directions for the animal to turn.");
+								if (direction != Direction.West) {
+									tempVector.x = -stepSize * Time.deltaTime;
+									tempVector.y = 0;
+									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+										validDirections.Add (Direction.West);
+								}
 
-				// Assign the new velocity and direction based on the randomly generated number
-				switch (randDir) {
-				case 0:
-					direction = Direction.North;
-					velocity.x = 0;
-					velocity.y = stepSize * Time.deltaTime;
-					break;
-				
-				case 1:
-					direction = Direction.South;
-					velocity.x = 0;
-					velocity.y = -stepSize * Time.deltaTime;
-					break;
-				
-				case 2:
-					direction = Direction.East;
-					velocity.x = stepSize * Time.deltaTime;
-					velocity.y = 0;
-					break;
-				
-				case 3:
-					direction = Direction.West;
-					velocity.x = -stepSize * Time.deltaTime;
-					velocity.y = 0;
-					break;
+								// Randomly select an element from the list of valid directions, then empty the list
+								if (validDirections.Count > 0) {
+									randDir = Random.Range (0, validDirections.Count);
+									validDirections.Clear ();
+								} else
+									Debug.Log ("There are no valid directions for the animal to turn.");
+
+								// Assign the new velocity and direction based on the randomly generated number
+								switch (randDir) {
+								case 0:
+									direction = Direction.North;
+									velocity.x = 0;
+									velocity.y = stepSize * Time.deltaTime;
+									break;
+						
+								case 1:
+									direction = Direction.South;
+									velocity.x = 0;
+									velocity.y = -stepSize * Time.deltaTime;
+									break;
+						
+								case 2:
+									direction = Direction.East;
+									velocity.x = stepSize * Time.deltaTime;
+									velocity.y = 0;
+									break;
+						
+								case 3:
+									direction = Direction.West;
+									velocity.x = -stepSize * Time.deltaTime;
+									velocity.y = 0;
+									break;
+								}
+							}
+						}
+					}
 				}
 			}
-		}
 
-		// Regardless of whether or not the velocity has changed, update the position
-		transform.position += (Vector3)velocity;
+			// Regardless of whether or not the velocity has changed, update the position
+			transform.position += (Vector3)velocity;
+		}
 	}
 
 	// Checks to see if there are any lures within the attraction radius.
