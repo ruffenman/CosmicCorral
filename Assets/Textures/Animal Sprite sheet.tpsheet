@@ -1,0 +1,42 @@
+#
+# Sprite sheet data for Unity.
+#
+# To import these sprites into your Unity project, download "TexturePackerImporter":
+# http://www.codeandweb.com/texturepacker/unity
+#
+# Sprite sheet: Animal Sprite sheet.png (376 x 104)
+# $TexturePacker:SmartUpdate:1b012fee5b844443655b558b0eb35f0a:cb74266da9873d4292252e1b8ad5cfea:7446cf8ab1c41fb35c1a1045d0ec8df4$
+#
+
+l0_alligator back1;2;70;32;32;0.5;0.5
+l0_alligator back2;2;36;32;32;0.5;0.5
+l0_alligator front1;2;2;32;32;0.5;0.5
+l0_alligator front2;36;70;32;32;0.5;0.5
+l0_alligator left1;36;36;32;32;0.5;0.5
+l0_alligator left2;36;2;32;32;0.5;0.5
+l0_alligator right1;70;70;32;32;0.5;0.5
+l0_alligator right2;70;36;32;32;0.5;0.5
+l0_flamingo back1;70;2;32;32;0.5;0.5
+l0_flamingo back2;104;70;32;32;0.5;0.5
+l0_flamingo back3;104;36;32;32;0.5;0.5
+l0_flamingo front1;104;2;32;32;0.5;0.5
+l0_flamingo front2;138;70;32;32;0.5;0.5
+l0_flamingo front3;138;36;32;32;0.5;0.5
+l0_flamingo left1;138;2;32;32;0.5;0.5
+l0_flamingo left2;172;70;32;32;0.5;0.5
+l0_flamingo left3;172;36;32;32;0.5;0.5
+l0_flamingo right1;172;2;32;32;0.5;0.5
+l0_flamingo right2;206;70;32;32;0.5;0.5
+l0_flamingo right3;206;36;32;32;0.5;0.5
+l0_possum back1;206;2;32;32;0.5;0.5
+l0_possum back2;240;70;32;32;0.5;0.5
+l0_possum back3;240;36;32;32;0.5;0.5
+l0_possum front1;240;2;32;32;0.5;0.5
+l0_possum front2;274;70;32;32;0.5;0.5
+l0_possum front3;274;36;32;32;0.5;0.5
+l0_possum left1;274;2;32;32;0.5;0.5
+l0_possum left2;308;70;32;32;0.5;0.5
+l0_possum left3;342;70;32;32;0.5;0.5
+l0_possum right1;308;36;32;32;0.5;0.5
+l0_possum right2;308;2;32;32;0.5;0.5
+l0_possum right3;342;36;32;32;0.5;0.5
