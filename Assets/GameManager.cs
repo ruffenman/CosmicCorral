@@ -29,10 +29,15 @@ public class GameManager : MonoBehaviour {
 			m_eventDispatcher = new EventDispatcher();
 			
 			m_map = Instantiate<MapManager>(m_MapManagerPrefab);
+			m_map.transform.SetParent(transform, false);
 			m_toolbar = Instantiate<ToolBarManager>(m_TooBarPrefab);
+			m_toolbar.transform.SetParent(transform, false);
 			m_soundManager = Instantiate<SoundManager>(m_soundManagerPrefab);
+			m_soundManager.transform.SetParent(transform, false);
 			m_uiMenus = Instantiate<UIMenus>(m_uiMenusPrefab);
+			m_uiMenus.transform.SetParent(transform, false);
 			m_levelManager = Instantiate<LevelManager>(m_levelManagerPrefab);
+			m_levelManager.transform.SetParent(transform, false);
 			m_levelManager.LevelStarted += OnLevelStarted;
 			m_levelManager.LevelEnded += OnLevelEnded;
 		}

@@ -1,21 +1,32 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class ToolBarItem : MonoBehaviour {
 	[SerializeField]
-	GameObject prefab;
+	public GameObject gameplayPrefab;
 	[SerializeField]
-	int count = 10;
+	public int count = 10;
+	
+	public void DecrementCount(int countChange){
+		this.count -= countChange;
+		m_countText.text = count.ToString();
+	}
 
-	public Vector2 initialPos { get; set;}
+	public Action<ToolBarItem> Selected;
+	public Action<ToolBarItem> Deselected;
+
+	private void Awake()
+	{
+		m_countText = GetComponentInChildren<Text>();
+		m_toggle = GetComponent<Toggle>();
+		m_toggle.onValueChanged.AddListener(OnToggled);
+	}
 
 	// Use this for initialization
 	void Start () {
-		Text countText = this.GetComponentInChildren<Text>();
-		countText.text = count.ToString();
-
-		initialPos = this.transform.position;
+		m_countText.text = count.ToString();
 	}
 	
 	// Update is called once per frame
@@ -23,11 +34,20 @@ public class ToolBarItem : MonoBehaviour {
 		
 	}
 
-	public void DecrementCount(int countChange){
-		Text countText = this.GetComponentInChildren<Text>();
-		this.count -= countChange;
-		countText.text = count.ToString();
+	private void OnToggled(bool isOn)
+	{
+		if(isOn)
+		{
+			Debug.LogFormat("Selected {0}", gameplayPrefab);
+			if(Selected != null) Selected(this);
+		}
+		else
+		{
+			Debug.LogFormat("Deselected {0}", gameplayPrefab);
+			if(Deselected != null) Deselected(this);
+		}
 	}
 
-
+	private Text m_countText;
+	private Toggle m_toggle;
 }

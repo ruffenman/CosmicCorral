@@ -2,58 +2,47 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
-public class ToolBarManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler,
-							  IDropHandler, IPointerDownHandler, IPointerEnterHandler {
+public class ToolBarManager : MonoBehaviour 
+{
 	#region instance variables
 	GraphicRaycaster graphicRaycaster;
 	#endregion
 
+	private void Awake()
+	{
+		m_items = new List<ToolBarItem>(GetComponentsInChildren<ToolBarItem>());
+		for(int i = 0; i < m_items.Count; ++i)
+		{
+			ToolBarItem item = m_items[i];
+			item.Selected += OnItemSelected;
+			item.Selected += OnItemDeselected;
+		}
+	}
 
 	// Use this for initialization
-	void Start () {
+	private void Start () {
+		DontDestroyOnLoad (gameObject);
 		graphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
-
-		DontDestroyOnLoad (graphicRaycaster.gameObject);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	private void Update () {
 
 	}
 
-	public void OnPointerEnter(PointerEventData eventData){
-		Debug.Log ("Mouse is over something");
+	private void OnItemSelected(ToolBarItem item)
+	{
+		m_selectedItem = item;
+		GameManager.soundManager.PlaySfx(SoundManager.SFX_SELECT_ITEM);
+	}
+	
+	private void OnItemDeselected(ToolBarItem item)
+	{
+
 	}
 
-	public void OnPointerDown(PointerEventData eventData){
-
-		eventData.selectedObject = eventData.pointerCurrentRaycast.gameObject;
-		Debug.Log("Clicked on something");
-	}
-
-	public void OnBeginDrag(PointerEventData eventData){
-		Debug.Log("Dragging");
-	}
-
-	public void OnEndDrag(PointerEventData eventData){
-		ToolBarItem tbi = eventData.selectedObject.GetComponent<ToolBarItem> ();
-		tbi.transform.position = tbi.initialPos;
-		Debug.Log("Dragging has stopped");
-	}
-
-	public void OnDrag(PointerEventData eventData){
-		eventData.selectedObject.transform.position = new Vector3 (eventData.position.x, eventData.position.y);
-		Debug.Log("Dragging Has started");
-	}
-
-	public void OnDrop(PointerEventData eventData){
-		Vector3 droppedAt = Camera.main.ScreenToWorldPoint (eventData.selectedObject.transform.position);
-		if(GameManager.map.DropToolbarItemAtPosition(eventData.selectedObject.gameObject, droppedAt)){
-			ToolBarItem tbi = eventData.selectedObject.GetComponent<ToolBarItem>();
-			tbi.DecrementCount(1);
-		}
-
-		Debug.Log ("Dropped drug thing");
-	}
+	private List<ToolBarItem> m_items;
+	private ToolBarItem m_selectedItem;
 }
