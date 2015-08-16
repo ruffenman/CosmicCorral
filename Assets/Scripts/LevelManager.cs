@@ -5,6 +5,10 @@ using System;
 public class LevelManager : MonoBehaviour
 {
 	public int numLives = 3;
+	//public int numPossumsRescued = 0;
+	//public int numFlamingoesRescued = 0;
+	//public int numGatorsRescued = 0;
+	public int numAnimalsRescued = 0;
 	public bool levelLoaded = false;
 
 	public void Win()
