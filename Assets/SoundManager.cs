@@ -4,6 +4,13 @@ using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour 
 {
+	public const string SFX_CANCEL_ITEM = "cancelItem";
+	public const string SFX_FLAMINGO = "flamingo";
+	public const string SFX_GATOR = "gator";
+	public const string SFX_PLACE_ITEM = "placeItem";
+	public const string SFX_POSSUM = "possum";
+	public const string SFX_SELECT_ITEM = "selectItem";
+
 	public static SoundManager instance;
 	
 	public bool isMusicEnabled = true;
