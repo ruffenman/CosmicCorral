@@ -31,7 +31,7 @@ public class AnimalController : MonoBehaviour {
 	void Start () {
 		attracted = false;
 		direction = Direction.South;
-		velocity = new Vector2 (0.0f, -stepSize);
+		velocity = new Vector2 (0.0f, -0.03f);
 		validDirections = new ArrayList ();
 		tempVector = Vector2.zero;
 		distToClosestLure = attractionRadius + 50.0f;
@@ -109,28 +109,28 @@ public class AnimalController : MonoBehaviour {
 				if (direction != Direction.North) {
 					tempVector.x = 0.0f;
 					tempVector.y = stepSize * Time.deltaTime;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.North);
 				}
 
 				if (direction != Direction.South) {
 					tempVector.x = 0;
 					tempVector.y = -stepSize * Time.deltaTime;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.South);
 				}
 
 				if (direction != Direction.East) {
 					tempVector.x = stepSize * Time.deltaTime;
 					tempVector.y = 0;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.East);
 				}
 
 				if (direction != Direction.West) {
 					tempVector.x = -stepSize * Time.deltaTime;
 					tempVector.y = 0;
-					if (Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
+					if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
 						validDirections.Add (Direction.West);
 				}
 
@@ -183,8 +183,7 @@ public class AnimalController : MonoBehaviour {
 			overlapCheckRadius = attractionRadius;
 		else
 			overlapCheckRadius = distToClosestLure;
-
-		//Debug.Log ("overlapCheckRadius: " + overlapCheckRadius.ToString ());
+		
 		attracted = false;
 		Collider2D[] overlapList = Physics2D.OverlapCircleAll (transform.position, overlapCheckRadius);
 		if (overlapList.Length != 0) {
