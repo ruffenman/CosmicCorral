@@ -81,9 +81,10 @@ public class GameManager : MonoBehaviour {
 		
 		m_uiMenus.HideMenus(0.25f);
 
-		if(Application.loadedLevel == 0)
-		{
-			m_levelManager.StartLevel(1);
+		if (Application.loadedLevel == 0) {
+			m_levelManager.StartLevel (1);
+		} else {
+			m_levelManager.StartLevel (Application.loadedLevel);
 		}
 	}
 
