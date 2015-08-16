@@ -86,11 +86,12 @@ public class AnimalController : MonoBehaviour {
 
 			}
 
-			else {
+			else 
+			{
 				checkForAttraction (ref attracted, ref closestLure, ref distToClosestLure);
 
-				if (attracted) {
-
+				if (attracted) 
+				{
 					// try to move towards the lure 
 					// otherwise move along the opposite axis if there is a dx / dy or just keep moving straight
 					dx = transform.position.x - closestLure.transform.position.x;
@@ -109,7 +110,9 @@ public class AnimalController : MonoBehaviour {
 									tryMovingNorth (ref direction, ref velocity);
 								}
 							}
-						} else {
+						} 
+						else 
+						{
 							if (!tryMovingEast (ref direction, ref velocity)) {
 								if (dy > 0) {
 									tryMovingSouth (ref direction, ref velocity);
@@ -120,8 +123,8 @@ public class AnimalController : MonoBehaviour {
 						}	
 					}
 
-			// move on the y axis
-			else {
+					// move on the y axis
+					else {
 						if (dy > 0) {
 							if (!tryMovingSouth (ref direction, ref velocity)) {
 								if (dx > 0) {
@@ -130,7 +133,8 @@ public class AnimalController : MonoBehaviour {
 									tryMovingEast (ref direction, ref velocity);
 								}
 							}
-						} else {
+						} 
+						else {
 							if (!tryMovingNorth (ref direction, ref velocity)) {
 								if (dx > 0) {
 									tryMovingWest (ref direction, ref velocity);
@@ -140,80 +144,78 @@ public class AnimalController : MonoBehaviour {
 							}
 						}
 					}
-				} else {
-	
+				} 
+				else 
+				{
 					// If there would be a collision, probabilistically change the animal's direction (can't stay in same direction)
 					// For now, all objects are treated as walls
+					getAdjacentTileCoords(ref tileCoords, direction);
+					if (!GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].isWalkable)
+					{
+						// Populate the list of valid directions
+						if (direction != Direction.North) {
+							getAdjacentTileCoords (ref tileCoords, Direction.North);
+							if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].isWalkable)
+								validDirections.Add (Direction.North);
+						}
 
-					Collider2D[] overlapList = Physics2D.OverlapPointAll (transform.position + (Vector3)velocity);
-					if (overlapList.Length != 0) {
-						foreach (Collider2D collider in overlapList) {
-							if (collider.gameObject.GetComponents<Door> ().Length!=0){
-					
+						if (direction != Direction.South) {
+							getAdjacentTileCoords (ref tileCoords, Direction.South);
+							if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].isWalkable)
+								validDirections.Add (Direction.South);
+						}
 
-								// Populate the list of valid directions
-								if (direction != Direction.North) {
-									tempVector.x = 0.0f;
-									tempVector.y = stepSize * Time.deltaTime;
-									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-										validDirections.Add (Direction.North);
-								}
+						if (direction != Direction.East) {
+							getAdjacentTileCoords (ref tileCoords, Direction.East);
+							if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].isWalkable)
+								validDirections.Add (Direction.East);
+						}
 
-								if (direction != Direction.South) {
-									tempVector.x = 0;
-									tempVector.y = -stepSize * Time.deltaTime;
-									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-										validDirections.Add (Direction.South);
-								}
+						if (direction != Direction.West) {
+							getAdjacentTileCoords (ref tileCoords, Direction.West);
+							if (GameManager.map.mapTile [(int)tileCoords.x, (int)tileCoords.y].isWalkable)
+								validDirections.Add (Direction.West);
+						}
 
-								if (direction != Direction.East) {
-									tempVector.x = stepSize * Time.deltaTime;
-									tempVector.y = 0;
-									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-										validDirections.Add (Direction.East);
-								}
+						// Randomly select an element from the list of valid directions, then empty the list
+						if (validDirections.Count > 0) {
+							randDir = Random.Range (0, validDirections.Count);
+							validDirections.Clear ();
+						} else
+						{
+							Debug.Log ("There are no valid directions for the animal to turn.");
+							randDir = 4;
+						}
 
-								if (direction != Direction.West) {
-									tempVector.x = -stepSize * Time.deltaTime;
-									tempVector.y = 0;
-									if (!Physics2D.OverlapPoint (transform.position + (Vector3)tempVector))
-										validDirections.Add (Direction.West);
-								}
+						// Assign the new velocity and direction based on the randomly generated number
+						switch (randDir) {
+						case 0:
+							direction = Direction.North;
+							velocity.x = 0;
+							velocity.y = stepSize * Time.deltaTime;
+							break;
+				
+						case 1:
+							direction = Direction.South;
+							velocity.x = 0;
+							velocity.y = -stepSize * Time.deltaTime;
+							break;
+				
+						case 2:
+							direction = Direction.East;
+							velocity.x = stepSize * Time.deltaTime;
+							velocity.y = 0;
+							break;
+				
+						case 3:
+							direction = Direction.West;
+							velocity.x = -stepSize * Time.deltaTime;
+							velocity.y = 0;
+							break;
 
-								// Randomly select an element from the list of valid directions, then empty the list
-								if (validDirections.Count > 0) {
-									randDir = Random.Range (0, validDirections.Count);
-									validDirections.Clear ();
-								} else
-									Debug.Log ("There are no valid directions for the animal to turn.");
-
-								// Assign the new velocity and direction based on the randomly generated number
-								switch (randDir) {
-								case 0:
-									direction = Direction.North;
-									velocity.x = 0;
-									velocity.y = stepSize * Time.deltaTime;
-									break;
-						
-								case 1:
-									direction = Direction.South;
-									velocity.x = 0;
-									velocity.y = -stepSize * Time.deltaTime;
-									break;
-						
-								case 2:
-									direction = Direction.East;
-									velocity.x = stepSize * Time.deltaTime;
-									velocity.y = 0;
-									break;
-						
-								case 3:
-									direction = Direction.West;
-									velocity.x = -stepSize * Time.deltaTime;
-									velocity.y = 0;
-									break;
-								}
-							}
+						case 4:
+							velocity = Vector2.zero;
+							break;
 						}
 					}
 				}
@@ -308,6 +310,26 @@ public class AnimalController : MonoBehaviour {
 		}
 		return false;
 		// TODO: (maybe trigger frustration graphic here)
+	}
+
+	void getAdjacentTileCoords(ref Vector2 tileCoords, Direction direction )
+	{
+		tileCoords = GameManager.map.GetTileCoordFromWorldPos (transform.position);
+		switch(direction)
+		{
+		case Direction.North:
+			tileCoords.y++;
+			break;
+		case Direction.South:
+			tileCoords.y--;
+			break;
+		case Direction.East:
+			tileCoords.x++;
+			break;
+		case Direction.West:
+			tileCoords.x--;
+			break;
+		}
 	}
 
 	#endregion

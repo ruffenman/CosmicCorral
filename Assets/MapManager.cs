@@ -57,13 +57,19 @@ public class MapManager : MonoBehaviour {
 				mapTile [x,y] = new Tile();
 				mapTile [x,y].type = Tile.TileType.NotDoor;
 			
-				// if position maps to a door, make it a door
+				// configure special tiles
 				tileCenter = GetWorldPositionFromTileCoord(new Vector2(x, y));
 				Collider2D[] overlapList = Physics2D.OverlapPointAll (tileCenter);
 				if (overlapList.Length != 0) {
 					foreach (Collider2D collider in overlapList) {
+
+						// if position maps to a door, make it a door
 						if (collider.gameObject.GetComponents<Door> ().Length!=0){
 							mapTile [x,y].type = Tile.TileType.GenericDoor;
+						}
+						// if position maps to another collision, make it unwalkable
+						else{
+							mapTile [x,y].isWalkable = false;
 						}
 					}
 				}
