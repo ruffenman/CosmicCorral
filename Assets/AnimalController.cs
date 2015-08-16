@@ -32,8 +32,8 @@ public class AnimalController : MonoBehaviour {
 	void Start () {
 		attracted = false;
 		respawn = false;
-		direction = Direction.North;
-		velocity = new Vector2 (0.0f, 0.03f);
+		direction = Direction.South;
+		velocity = new Vector2 (0.0f, -0.03f);
 		validDirections = new ArrayList ();
 		tempVector = Vector2.zero;
 		distToClosestLure = attractionRadius + 50.0f;
@@ -56,6 +56,7 @@ public class AnimalController : MonoBehaviour {
 					direction = Direction.North;
 					velocity = new Vector2 (0.0f, 0.03f);
 					respawn = false;
+					attracted = false;
 				}
 			}
 
@@ -90,7 +91,7 @@ public class AnimalController : MonoBehaviour {
 			{
 				checkForAttraction (ref attracted, ref closestLure, ref distToClosestLure);
 
-				if (attracted) 
+				if (attracted && closestLure !=null) 
 				{
 					// try to move towards the lure 
 					// otherwise move along the opposite axis if there is a dx / dy or just keep moving straight
@@ -98,7 +99,11 @@ public class AnimalController : MonoBehaviour {
 					dy = transform.position.y - closestLure.transform.position.y;
 
 					if (Mathf.Abs (dx) < 0.5 && Mathf.Abs (dy) < 0.5)
+					{
 						Destroy (closestLure.gameObject);
+						closestLure = null;
+						attracted = false;
+					}
 
 					// move on the x axis
 					if (Mathf.Abs (dx) > Mathf.Abs (dy)) { 
@@ -231,16 +236,17 @@ public class AnimalController : MonoBehaviour {
 	// for new lures that are closer (for efficiency)
 	void checkForAttraction(ref bool attracted, ref Collider2D closestLure, ref float distToClosestLure){
 
-		if (!attracted)
+		//if (!attracted)
 			overlapCheckRadius = attractionRadius;
-		else
-			overlapCheckRadius = distToClosestLure;
+		//else
+			//overlapCheckRadius = distToClosestLure;
 		
 		attracted = false;
+		distToClosestLure = attractionRadius + 50.0f;
 		Collider2D[] overlapList = Physics2D.OverlapCircleAll (transform.position, overlapCheckRadius);
 		if (overlapList.Length != 0) {
 			foreach (Collider2D collider in overlapList) {
-				if (collider.gameObject.GetComponents<LureController> ().Length!=0) {
+				if (collider.gameObject.GetComponent<LureController> ()) {
 
 					// set the animal's attraction
 					if (!attracted)
@@ -250,7 +256,10 @@ public class AnimalController : MonoBehaviour {
 					if (Vector2.Distance (transform.position, collider.transform.position) < distToClosestLure) {
 						closestLure = collider;
 						distToClosestLure = Vector2.Distance (transform.position, collider.transform.position);
+					
+					
 					}
+
 				}
 			}
 		}
